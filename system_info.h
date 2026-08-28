@@ -31,4 +31,6 @@ void get_load_average(
     double *load15
 );
 
+double get_disk_usage(const char *path);
+
 #endif

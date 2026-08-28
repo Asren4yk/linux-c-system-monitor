@@ -1,5 +1,5 @@
 #include "system_info.h"
-
+#include <sys/statvfs.h>
 #include <string.h>
 
 #include <stdio.h>
@@ -244,4 +244,30 @@ int get_cpu_cores(void)
     fclose(file);
 
     return cores;
+}
+
+
+double get_disk_usage(const char *path)
+{
+    struct statvfs stat;
+
+    if (statvfs(path, &stat) != 0)
+    {
+        return -1.0;
+    }
+
+    unsigned long long total =
+        (unsigned long long)stat.f_blocks * stat.f_frsize;
+
+    unsigned long long available =
+        (unsigned long long)stat.f_bavail * stat.f_frsize;
+
+    unsigned long long used = total - available;
+
+    if (total == 0)
+    {
+        return -1.0;
+    }
+
+    return ((double)used / (double)total) * 100.0;
 }

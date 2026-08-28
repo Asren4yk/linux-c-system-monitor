@@ -5,6 +5,9 @@
 
 int main(int argc, char *argv[])
 {
+    /*
+     * Обробка командного рядка
+     */
     if (argc > 1)
     {
         if (strcmp(argv[1], "--help") == 0)
@@ -31,8 +34,14 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    /*
+     * Структура з інформацією про систему
+     */
     SystemInfo info;
 
+    /*
+     * Отримуємо інформацію
+     */
     info.cpu_usage = get_cpu_usage();
     info.memory_usage = get_memory_usage();
     info.cpu_cores = get_cpu_cores();
@@ -48,6 +57,14 @@ int main(int argc, char *argv[])
         &info.load15
     );
 
+    /*
+     * Використання диска
+     */
+    double disk_usage = get_disk_usage("/");
+
+    /*
+     * Перевірка помилок
+     */
     if (info.cpu_usage < 0)
     {
         printf("Error: cannot read CPU information\n");
@@ -72,6 +89,15 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    if (disk_usage < 0)
+    {
+        printf("Error: cannot read disk information\n");
+        return 1;
+    }
+
+    /*
+     * Виведення інформації
+     */
     printf("\n");
     printf("================================\n");
     printf("          SYSTEM MONITOR\n");
@@ -80,6 +106,7 @@ int main(int argc, char *argv[])
     printf("CPU Usage:       %6.1f %%\n", info.cpu_usage);
     printf("Memory Usage:    %6.1f %%\n", info.memory_usage);
     printf("CPU Cores:       %6d\n", info.cpu_cores);
+    printf("Disk Usage:      %6.1f %%\n", disk_usage);
 
     printf(
         "Load Average:    %.2f %.2f %.2f\n",
